@@ -6,24 +6,31 @@ import os
 
 DEPTH = 1
 
+all_quandl_codes = ["HKEX/00981", "HKEX/06837"]
+
 def main(api_key: str):
     quandl.ApiConfig.api_key = api_key
 
     if not os.path.exists(os.path.join("data", "quandl")):
         os.mkdir(os.path.join("data", "quandl"))
 
-    for t in ALL_QUANDL_CODES:
+    for t in all_quandl_codes:#ALL_QUANDL_CODES:
         print(t)
         try:
             data = quandl.get(
-                f"{t}{DEPTH}",
+                t,
+                #f"{t}{DEPTH}",
                 start_date="1988-01-01",
             )
         except BaseException as ex:
             print(ex)
-        if ("Settle" in data.columns) and (data.index.min() <= dt.datetime(2015, 1, 1)):
-            data[["Settle"]].to_csv(
-                os.path.join("data", "quandl", f"{t.split('/')[-1]}.csv")
+
+        print(data)
+        print(data.columns)
+
+        if ("Previous Close" in data.columns) and (data.index.min() <= dt.datetime(2015, 1, 1)):
+            data[["Previous Close"]].to_csv(
+                os.path.join("data", "quandl", f"{t.split('/')[-1]}_HKHK.csv")
             )
 
 

@@ -10,13 +10,14 @@ from settings.default import (
 
 N_WORKERS = len(QUANDL_TICKERS)
 
+N_WORKERS = 1
 
 def main(lookback_window_length: int):
     if not os.path.exists(CPD_QUANDL_OUTPUT_FOLDER(lookback_window_length)):
         os.mkdir(CPD_QUANDL_OUTPUT_FOLDER(lookback_window_length))
 
     all_processes = [
-        f'python -m examples.cpd_quandl "{ticker}" "{os.path.join(CPD_QUANDL_OUTPUT_FOLDER(lookback_window_length), ticker + ".csv")}" "1990-01-01" "2021-12-31" "{lookback_window_length}"'
+        f'python -m examples.cpd_quandl "{ticker}" "{os.path.join(CPD_QUANDL_OUTPUT_FOLDER(lookback_window_length), ticker + ".csv")}" "2020-11-01" "2020-12-31" "{lookback_window_length}"'
         for ticker in QUANDL_TICKERS
     ]
     process_pool = multiprocessing.Pool(processes=N_WORKERS)

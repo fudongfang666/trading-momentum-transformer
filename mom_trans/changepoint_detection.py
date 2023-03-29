@@ -362,6 +362,9 @@ def run_module(
         time_index = window_end - 1
         window_date = ts_data_window["date"].iloc[-1].strftime("%Y-%m-%d")
 
+        print("====print(ts_data_window)=====")
+        print(ts_data_window)
+
         try:
             if use_kM_hyp_to_initialise_kC:
                 cp_score, cp_loc, cp_loc_normalised, _, _ = changepoint_loc_and_score(
@@ -380,6 +383,13 @@ def run_module(
         except:
             # write as NA when fails and will deal with this later
             cp_score, cp_loc, cp_loc_normalised = "NA", "NA", "NA"
+
+        print("====cp_score====")
+        print(cp_score)
+        print("====cp_loc=====")
+        print(cp_loc)
+        print("====cp_loc_normalised====")
+        print(cp_loc_normalised)
 
         # #write the reults to the csv
         with open(output_csv_file_path, "a") as f:

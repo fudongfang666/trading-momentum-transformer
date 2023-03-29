@@ -27,6 +27,9 @@ from settings.default import BACKTEST_AVERAGE_BASIS_POINTS
 from settings.hp_grid import HP_MINIBATCH_SIZE
 
 physical_devices = tf.config.list_physical_devices("GPU")
+
+print("====physical_devices++:{}".format(physical_devices))
+
 if physical_devices:
     tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
 
@@ -563,6 +566,8 @@ def run_all_windows(
         hp_minibatch_size ([type], optional): minibatch size hyperparameter grid. Defaults to HP_MINIBATCH_SIZE.
         standard_window_size (int, optional): standard number of years in test window. Defaults to 1.
     """
+
+    print("=====train_intervals:{}".format(train_intervals))
     # run the expanding window
     for interval in train_intervals:
         run_single_window(
