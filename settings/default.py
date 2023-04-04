@@ -19,18 +19,18 @@ FEATURES_QUANDL_FILE_PATH_DEFAULT = FEATURES_QUANDL_FILE_PATH(CPD_DEFAULT_LBW)
 
 QUANDL_TICKERS = [
 # energy
-#    "CME_CL",
-#    "CME_NG",
-#    "ICE_B",
-#    "CME_HO",
-#    "CME_LB"
+    "CME_CL",
+    "CME_NG",
+    "ICE_B",
+    "CME_HO",
+    "CME_LB"
 
 # agri
-    "CME_S",
-    "CME_W",
-    "CME_C",
-    "ICE_CT",
-    "ICE_SB"
+#    "CME_S",
+#    "CME_W",
+#    "CME_C",
+#    "ICE_CT",
+#    "ICE_SB"
 
 
 #    "CME_SP",
@@ -46,11 +46,16 @@ QUANDL_TICKERS = [
 ]
 
 ALL_QUANDL_CODES = [
-    "CHRIS/CME_S",
-    "CHRIS/CME_W",
-    "CHRIS/CME_C",
-    "CHRIS/ICE_CT",
-    "CHRIS/ICE_SB"
+    "CHRIS/CME_CL",
+    "CHRIS/CME_NG",
+    "CHRIS/ICE_B",
+    "CHRIS/CME_HO",
+    "CHRIS/CME_LB"
+#    "CHRIS/CME_S",
+#    "CHRIS/CME_W",
+#    "CHRIS/CME_C",
+#    "CHRIS/ICE_CT",
+#    "CHRIS/ICE_SB"
 
 #    "CHRIS/CME_SP",
 #    "CHRIS/EUREX_FDAX",
