@@ -18,7 +18,6 @@ FEATURES_QUANDL_FILE_PATH = lambda lbw: os.path.join(
 FEATURES_QUANDL_FILE_PATH_DEFAULT = FEATURES_QUANDL_FILE_PATH(CPD_DEFAULT_LBW)
 
 QUANDL_TICKERS = [
-# energy
     "CME_CL",
     "CME_NG",
     "ICE_B",
@@ -51,22 +50,6 @@ ALL_QUANDL_CODES = [
     "CHRIS/ICE_B",
     "CHRIS/CME_HO",
     "CHRIS/CME_LB"
-#    "CHRIS/CME_S",
-#    "CHRIS/CME_W",
-#    "CHRIS/CME_C",
-#    "CHRIS/ICE_CT",
-#    "CHRIS/ICE_SB"
-
-#    "CHRIS/CME_SP",
-#    "CHRIS/EUREX_FDAX",
-#    "CHRIS/CME_GC",
-#    "CHRIS/CME_PL",
-#    "CHRIS/CME_CL",
-#    "CHRIS/CME_LB",
-#    "CHRIS/CME_S",
-#    "CHRIS/ICE_B",
-#    "CHRIS/CME_EC",
-#    "CHRIS/ICE_DX"
 ]
 
 COMMODITIES_TICKERS = [

@@ -3,8 +3,7 @@ from mom_trans.backtest import run_classical_methods
 
 INTERVALS = [(2005, y, y + 1) for y in range(2013, 2015)]
 
-#REFERENCE_EXPERIMENT = "experiment_quandl_100assets_tft_cpnone_len252_notime_div_v1"
-REFERENCE_EXPERIMENT = "experiment_quandl_100assets_tft_cp63_len63_notime_div_v1"
+REFERENCE_EXPERIMENT = "experiment_quandl_100assets_lstm_cpnone_len63_notime_div_v1"
 
 features_file_path = os.path.join(
     "data",
