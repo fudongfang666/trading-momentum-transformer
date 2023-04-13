@@ -28,7 +28,7 @@ from settings.fixed_params import MODLE_PARAMS
 from mom_trans.model_inputs import ModelFeatures
 from empyrical import sharpe_ratio
 
-
+# y_true: captured reture, weights: predicted
 class SharpeLoss(tf.keras.losses.Loss):
     def __init__(self, output_size: int = 1):
         self.output_size = output_size  # in case we have multiple targets => output dim[-1] = output_size * n_quantiles

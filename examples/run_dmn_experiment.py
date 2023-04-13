@@ -58,6 +58,10 @@ def main(
         architecture = "TFT"
         lstm_time_steps = 63
         changepoint_lbws = [63]
+    elif experiment == "TRANSFORMER":
+        architecture = "TRANSFORMER"
+        lstm_time_steps = 63
+        changepoint_lbws = None
     else:
         raise BaseException("Invalid experiment.")
 
