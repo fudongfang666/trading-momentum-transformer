@@ -19,28 +19,16 @@ FEATURES_QUANDL_FILE_PATH_DEFAULT = FEATURES_QUANDL_FILE_PATH(CPD_DEFAULT_LBW)
 
 QUANDL_TICKERS = [
     "CME_SP",
+    "CME_NQ",
     "EUREX_FDAX",
-    "CME_GC",
-    "CME_PL",
-    "CME_CL",
-    "CME_LB",
-    "CME_S",
-    "ICE_B",
-    "CME_EC",
-    "ICE_DX"
+    "CME_NK"
 ]
 
 ALL_QUANDL_CODES = [
     "CHRIS/CME_SP",
+    "CHRIS/CME_NQ",
     "CHRIS/EUREX_FDAX",
-    "CHRIS/CME_GC",
-    "CHRIS/CME_PL",
-    "CHRIS/CME_CL",
-    "CHRIS/CME_LB",
-    "CHRIS/CME_S",
-    "CHRIS/ICE_B",
-    "CHRIS/CME_EC",
-    "CHRIS/ICE_DX"
+    "CHRIS/CME_NK"
 ]
 
 COMMODITIES_TICKERS = [

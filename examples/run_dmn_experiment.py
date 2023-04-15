@@ -147,6 +147,7 @@ if __name__ == "__main__":
                 "TFT-SHORT",
                 "TFT-SHORT-CPD-21",
                 "TFT-SHORT-CPD-63",
+                "TRANSFORMER"
             ],
             help="Input folder for CPD outputs.",
         )

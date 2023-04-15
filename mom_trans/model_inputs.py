@@ -770,6 +770,8 @@ class ModelFeatures:
 
         input_size = len(self._get_input_columns())
 
+        print("=====_get_input_columns:{}".format(self._get_input_columns()))
+
         # TODO artefact of previous code - need to clean up
         locations = {
             # "lstm_input_size": input_size,

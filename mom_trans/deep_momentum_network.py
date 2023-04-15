@@ -90,7 +90,6 @@ class SharpeValidationLoss(keras.callbacks.Callback):
             workers=self.n_multiprocessing_workers,
             use_multiprocessing=True,  # , batch_size=1
         )
-
         captured_returns = tf.math.unsorted_segment_mean(
             positions * self.returns, self.time_indices, self.num_time
         )[1:]
@@ -525,7 +524,6 @@ class LstmDeepMomentumNetworkModel(DeepMomentumNetworkModel):
             use_bias=True,
         )(input)
         dropout = keras.layers.Dropout(dropout_rate)(lstm)
-
         output = tf.keras.layers.TimeDistributed(
             tf.keras.layers.Dense(
                 self.output_size,
