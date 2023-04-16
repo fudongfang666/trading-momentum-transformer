@@ -476,10 +476,19 @@ class DeepMomentumNetworkModel(ABC):
             workers=self.n_multiprocessing_workers,
             use_multiprocessing=True,  # , batch_size=1
         )
+
+        print("=====positions:{}".format(positions))
+
         if sliding_window:
             positions = positions[:, -1, 0].flatten()
         else:
             positions = positions.flatten()
+
+        
+        print("======sliding_window:{}".format(sliding_window))
+        print("======positions:{}".format(len(positions)))
+        print("======returns:{}".format(len(returns)))
+
 
         captured_returns = returns * positions
         results = pd.DataFrame(
@@ -513,6 +522,7 @@ class LstmDeepMomentumNetworkModel(DeepMomentumNetworkModel):
         # minibatch_size = hp.Choice("hidden_layer_size", HP_MINIBATCH_SIZE)
 
         input = keras.Input((self.time_steps, self.input_size))
+
         lstm = tf.keras.layers.LSTM(
             hidden_layer_size,
             return_sequences=True,
@@ -524,6 +534,7 @@ class LstmDeepMomentumNetworkModel(DeepMomentumNetworkModel):
             unroll=False,
             use_bias=True,
         )(input)
+
         dropout = keras.layers.Dropout(dropout_rate)(lstm)
 
         output = tf.keras.layers.TimeDistributed(
