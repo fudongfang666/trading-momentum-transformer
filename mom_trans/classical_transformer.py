@@ -74,8 +74,7 @@ class SingleAttention(keras.layers.Layer):
         return attn_out
 
 class MultiAttention(keras.layers.Layer):
-    # TODO input cols
-    def __init__(self, d_k, d_v, n_heads, input_cols = 8):
+    def __init__(self, d_k, d_v, n_heads, input_cols):
         super(MultiAttention, self).__init__()
         self.d_k = d_k
         self.d_v = d_v
@@ -96,7 +95,7 @@ class MultiAttention(keras.layers.Layer):
         return multi_linear
 
 class TransformerEncoder(keras.layers.Layer):
-    def __init__(self, d_k, d_v, n_heads, ff_dim, dropout, **kwargs):
+    def __init__(self, d_k, d_v, n_heads, ff_dim, dropout, input_cols, **kwargs):
         super(TransformerEncoder, self).__init__()
         self.d_k = d_k
         self.d_v = d_v
@@ -104,14 +103,15 @@ class TransformerEncoder(keras.layers.Layer):
         self.ff_dim = ff_dim
         self.attn_heads = list()
         self.dropout_rate = dropout
+        self.input_cols = input_cols
 
     def build(self, input_shape):
-        self.attn_multi = MultiAttention(self.d_k, self.d_v, self.n_heads)
+        self.attn_multi = MultiAttention(self.d_k, self.d_v, self.n_heads, self.input_cols)
         self.attn_dropout = keras.layers.Dropout(self.dropout_rate)
         self.attn_normalize = keras.layers.LayerNormalization(input_shape=input_shape, epsilon=1e-6)
 
         self.ff_conv1D_1 = keras.layers.Conv1D(filters=self.ff_dim, kernel_size=1, activation='relu')
-        self.ff_conv1D_2 = keras.layers.Conv1D(filters=10, kernel_size=1) # TODO input_shape[0]=(batch, seq_len, 7), input_shape[0][-1]=7 
+        self.ff_conv1D_2 = keras.layers.Conv1D(filters=self.input_cols+2, kernel_size=1) # input_shape[0]=(batch, seq_len, 7), input_shape[0][-1]=7 
         self.ff_dropout = keras.layers.Dropout(self.dropout_rate)
         self.ff_normalize = keras.layers.LayerNormalization(input_shape=input_shape, epsilon=1e-6)    
 
@@ -144,9 +144,9 @@ class TransformerDeepMomentumNetworkModel(DeepMomentumNetworkModel):
         n_heads = 8
         ff_dim = hidden_layer_size
 
-        attn_layer1 = TransformerEncoder(d_k, d_v, n_heads, ff_dim, dropout_rate)
-        attn_layer2 = TransformerEncoder(d_k, d_v, n_heads, ff_dim, dropout_rate)
-        attn_layer3 = TransformerEncoder(d_k, d_v, n_heads, ff_dim, dropout_rate)
+        attn_layer1 = TransformerEncoder(d_k, d_v, n_heads, ff_dim, dropout_rate, self.input_size)
+        attn_layer2 = TransformerEncoder(d_k, d_v, n_heads, ff_dim, dropout_rate, self.input_size)
+        attn_layer3 = TransformerEncoder(d_k, d_v, n_heads, ff_dim, dropout_rate, self.input_size)
 
         in_seq = keras.Input((self.time_steps, self.input_size))
         x = time_embedding(in_seq)
