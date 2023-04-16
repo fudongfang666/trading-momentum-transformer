@@ -58,6 +58,10 @@ def main(
         architecture = "TFT"
         lstm_time_steps = 63
         changepoint_lbws = [63]
+    elif experiment == "TRANSFORMER":
+        architecture = "TRANSFORMER"
+        lstm_time_steps = 63
+        changepoint_lbws = None
     else:
         raise BaseException("Invalid experiment.")
 
@@ -146,6 +150,7 @@ if __name__ == "__main__":
                 "TFT-SHORT",
                 "TFT-SHORT-CPD-21",
                 "TFT-SHORT-CPD-63",
+                "TRANSFORMER"
             ],
             help="Input folder for CPD outputs.",
         )
