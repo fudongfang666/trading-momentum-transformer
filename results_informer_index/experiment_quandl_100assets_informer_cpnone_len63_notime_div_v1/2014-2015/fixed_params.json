@@ -1,0 +1,31 @@
+{
+    "architecture": "INFORMER",
+    "total_time_steps": 63,
+    "early_stopping_patience": 25,
+    "multiprocessing_workers": 32,
+    "num_epochs": 300,
+    "fill_blank_dates": false,
+    "split_tickers_individually": true,
+    "random_search_iterations": 50,
+    "evaluate_diversified_val_sharpe": true,
+    "train_valid_ratio": 0.9,
+    "time_features": false,
+    "force_output_sharpe_length": null,
+    "input_size": 8,
+    "output_size": 1,
+    "category_counts": [],
+    "static_input_loc": [],
+    "known_regular_inputs": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+    ],
+    "known_categorical_inputs": [],
+    "changepoint_lbws": [],
+    "features_file_path": "data/quandl_cpd_nonelbw.csv"
+}

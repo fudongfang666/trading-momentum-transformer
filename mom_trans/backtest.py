@@ -14,6 +14,7 @@ from mom_trans.model_inputs import ModelFeatures
 from mom_trans.deep_momentum_network import LstmDeepMomentumNetworkModel
 from mom_trans.momentum_transformer import TftDeepMomentumNetworkModel
 from mom_trans.classical_transformer import TransformerDeepMomentumNetworkModel
+from mom_trans.informer import InformerDeepMomentumNetworkModel
 from mom_trans.classical_strategies import (
     VOL_TARGET,
     calc_performance_metrics,
@@ -445,6 +446,20 @@ def run_single_window(
         )
     elif params["architecture"] == "TRANSFORMER":
         dmn = TransformerDeepMomentumNetworkModel(
+            experiment_name,
+            hp_directory,
+            hp_minibatch_size,
+            **params,
+            **model_features.input_params,
+            **{
+                "column_definition": model_features.get_column_definition(),
+                "num_encoder_steps": 0,  # TODO artefact
+                "stack_size": 1,
+                "num_heads": 4,  # TODO to fixed params
+            },
+        )
+    elif params["architecture"] == "INFORMER":
+        dmn = InformerDeepMomentumNetworkModel(
             experiment_name,
             hp_directory,
             hp_minibatch_size,
