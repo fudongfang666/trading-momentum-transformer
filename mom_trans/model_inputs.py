@@ -121,7 +121,7 @@ class ModelFeatures:
                 self._column_definition.append(
                     (f"cp_rl_{lbw}", DataTypes.REAL_VALUED, InputTypes.KNOWN_INPUT)
                 )
-
+        # NOTE: not working
         if time_features:
             self._column_definition.append(
                 ("days_from_start", DataTypes.REAL_VALUED, InputTypes.KNOWN_INPUT)
@@ -161,11 +161,14 @@ class ModelFeatures:
             )
             # df["month_of_year"] = MinMaxScaler().fit_transform(df[["month_of_year"]].values).flatten()
 
+        # NOTE: only work in TFT arch, please refer to here:https://github.com/kieranjwood/trading-momentum-transformer/blob/master/mom_trans/backtest.py#L408
         if add_ticker_as_static:
             self._column_definition.append(
                 (f"static_ticker", DataTypes.CATEGORICAL, InputTypes.STATIC_INPUT)
             )
             df["static_ticker"] = df["ticker"]
+
+            # NOTE: not working
             if static_ticker_type_feature:
                 df["static_ticker_type"] = df["ticker"].map(
                     lambda t: asset_class_dictionary[t]
@@ -178,6 +181,7 @@ class ModelFeatures:
                     )
                 )
 
+        # NOTE: not working
         self.transform_real_inputs = transform_real_inputs
 
         # for static_variables
@@ -186,14 +190,17 @@ class ModelFeatures:
         test = df.loc[years >= test_boundary]
 
         if split_tickers_individually:
+            # NOTE: goto this branch
             trainvalid = df.loc[years < test_boundary]
             if lags:
+                # NOTE: not working
                 tickers = (
                     trainvalid.groupby("ticker")["ticker"].count()
                     * (1.0 - train_valid_ratio)
                 ) >= total_time_steps
                 tickers = tickers[tickers].index.tolist()
             else:
+                # NOTE: goto this branch
                 tickers = list(trainvalid.ticker.unique())
 
             train, valid = [], []
@@ -209,6 +216,7 @@ class ModelFeatures:
 
             test = test[test.ticker.isin(tickers)]
         else:
+            # NOTE: not working
             trainvalid = df.loc[years < test_boundary]
             dates = np.sort(trainvalid.index.unique())
             split_index = int(train_valid_ratio * len(dates))
@@ -264,6 +272,7 @@ class ModelFeatures:
         )
 
         # to deal with case where fixed window did not have a full sequence
+        # NOTE: not working
         if lags:
             for t in tickers:
                 test_ticker = test[test["ticker"] == t]
@@ -284,6 +293,7 @@ class ModelFeatures:
         ]
 
         if lags:
+            # NOTE: not working
             self.train = self._batch_data_smaller_output(
                 train, train_valid_sliding, self.lags
             )
@@ -295,6 +305,7 @@ class ModelFeatures:
                 test_with_buffer, True, self.lags
             )
         else:
+            # NOTE: goto this branch
             self.train = self._batch_data(train, train_valid_sliding)
             self.valid = self._batch_data(valid, train_valid_sliding)
             self.test_fixed = self._batch_data(test, False)
@@ -336,6 +347,7 @@ class ModelFeatures:
 
         categorical_scalers = {}
         num_classes = []
+
         for col in categorical_inputs:
             # Set all to str so that we don't have mixed integer/string columns
             srs = df[col].apply(str)
@@ -375,16 +387,19 @@ class ModelFeatures:
         )
 
         # Format real inputs
+        # NOTE: not working
         if self.transform_real_inputs:
             output[real_inputs] = self._real_scalers.transform(df[real_inputs].values)
 
         # Format categorical inputs
         for col in categorical_inputs:
+            # NOTE: it's onehot
             string_df = df[col].apply(str)
             output[col] = self._cat_scalers[col].transform(string_df)
 
         return output
 
+    # NOTE: not working
     def format_predictions(self, predictions):
         """Reverts any normalisation to give predictions in original scale.
         Args:
@@ -541,20 +556,24 @@ class ModelFeatures:
 
         else:
             for _, sliced in data.groupby(id_col):
-
                 col_mappings = {
                     "identifier": [id_col],
                     "date": [time_col],
                     "inputs": input_cols,
                     "outputs": [target_col],
                 }
-
                 time_steps = len(sliced)
                 lags = self.total_time_steps
+
+                # NOTE
+                ''' e.g. length=5904, step=252, length%step=108, can make 23 complete steps and remain 108 elements.
+                   so need extra 144 to make complete 24 steps.'''
                 additional_time_steps_required = lags - (time_steps % lags)
 
+                # NOTE: make batch here, just simply reshape.
                 def _batch_single_entity(input_data):
                     x = input_data.values
+                    # add zeros to make complete steps, please refer to the example above.
                     if additional_time_steps_required > 0:
                         x = np.concatenate(
                             [x, np.zeros((additional_time_steps_required, x.shape[1]))]
@@ -564,9 +583,12 @@ class ModelFeatures:
                 # for k in col_mappings:
                 k = "outputs"
                 cols = col_mappings[k]
+
                 arr = _batch_single_entity(sliced[cols].copy())
 
                 batch_size = arr.shape[0]
+
+                # NOTE: the last series in a batch may have zero-filled items, use sequence_lengths to indicate.
                 sequence_lengths = [
                     (
                         lags
@@ -575,8 +597,10 @@ class ModelFeatures:
                     )
                     for i in range(batch_size)
                 ]
+
                 active_entries = np.ones((arr.shape[0], arr.shape[1], arr.shape[2]))
                 for i in range(batch_size):
+                    # NOTE: set those zero-filled items in the last batch to zero.
                     active_entries[i, sequence_lengths[i] :, :] = 0
                 sequence_lengths = np.array(sequence_lengths, dtype=np.int)
 
@@ -604,19 +628,22 @@ class ModelFeatures:
                         data_map[k].append(arr[sequence_lengths > 0, :, :])
 
             # Combine all data
+            # NOTE: combine all tickers' batch together, shape: [batch, seq, features]
             for k in data_map:
                 data_map[k] = np.concatenate(data_map[k], axis=0)
-
+        # NOTE: indicate those zero-filled item, shape [batch, seq]
         active_flags = (np.sum(data_map["active_entries"], axis=-1) > 0.0) * 1.0
         data_map["inputs"] = data_map["inputs"][: len(active_flags)]
         data_map["outputs"] = data_map["outputs"][: len(active_flags)]
         data_map["active_entries"] = active_flags
         data_map["identifier"] = data_map["identifier"][: len(active_flags)]
+        # NOTE: set those zero-filled items to ""
         data_map["identifier"][data_map["identifier"] == 0] = ""
         data_map["date"] = data_map["date"][: len(active_flags)]
         data_map["date"][data_map["date"] == 0] = ""
         return data_map
 
+    # NOTE: not working
     def _batch_data_smaller_output(self, data, sliding_window, output_length):
         """Batches data for training.
 
